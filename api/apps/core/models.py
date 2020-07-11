@@ -17,4 +17,4 @@ class CreationModificationDateBase(models.Model):
     )
 
     class Meta:
-        abatract = True
+        abstract = True

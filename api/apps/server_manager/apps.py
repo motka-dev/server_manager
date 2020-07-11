@@ -2,4 +2,4 @@ from django.apps import AppConfig
 
 
 class ServerManagerConfig(AppConfig):
-    name = 'server_manager'
+    name = 'api.apps.server_manager'
