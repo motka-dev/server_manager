@@ -3,7 +3,6 @@ from django.utils.crypto import get_random_string
 from django.contrib.auth.hashers import make_password
 from django.contrib.postgres.fields import JSONField
 
-
 from api.apps.core.models import CreationModificationDateBase
 from api.apps.core.stage import get_default_server_settings
 
