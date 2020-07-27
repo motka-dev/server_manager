@@ -1,9 +1,8 @@
-from django.conf.urls.i18n import i18n_patterns
 from django.contrib import admin
-from django.urls import path
-from django.views.generic import TemplateView
+from django.urls import path, include
 
 
-urlpatterns = i18n_patterns(
+urlpatterns = [
     path('admin/', admin.site.urls),
-)
+    path('servers/', include('api.apps.server_manager.urls')),
+]

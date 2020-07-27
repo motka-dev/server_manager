@@ -1,12 +1,17 @@
 from django.contrib import admin
-from .models import ServerConnection, Server
+from .models import Server, SimpleSSHConnector, ConnectorType
 
 
 @admin.register(Server)
 class ServerAdmin(admin.ModelAdmin):
-    list_display = ['server_ip', 'server_name']
+    list_display = ['server_name']
 
 
-@admin.register(ServerConnection)
-class ServerConnectionAdmin(admin.ModelAdmin):
-    list_display = ['ssh_username', 'ssh_password']
+@admin.register(ConnectorType)
+class ConnectorTypeAdmin(admin.ModelAdmin):
+    list_display = ['name']
+
+
+@admin.register(SimpleSSHConnector)
+class SimpleSSHConnectionAdmin(admin.ModelAdmin):
+    list_display = ['ssh_username', 'server_ip']
