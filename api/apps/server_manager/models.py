@@ -72,7 +72,7 @@ class SimpleSSHConnector(models.Model):
     )
 
     server_ref = models.OneToOneField(
-        verbose_name='SSH. Password for connection to server',
+        verbose_name='Server ref',
         to=Server,
         on_delete=models.CASCADE,
         default=None,
