@@ -9,7 +9,7 @@ from api.apps.core.stage import get_default_server_settings
 from .validators import validate_json_settings
 
 
-class Server(CreationModificationDateBase):
+class ServerConfig(CreationModificationDateBase):
     """
     Describes the user's server that will be monitored and configured
     """
@@ -18,7 +18,7 @@ class Server(CreationModificationDateBase):
         max_length=16,
         blank=False,
         null=False,
-        default=get_random_string(length=8),
+        default=get_random_string(length=5),
     )
 
     is_connected = models.BooleanField(
@@ -33,10 +33,7 @@ class Server(CreationModificationDateBase):
         validators=[validate_json_settings],
     )
 
-    def __repr__(self):
-        return f"{self.server_name} {self.is_connected}"
-
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.server_name} {self.is_connected}"
 
     class Meta:
@@ -45,49 +42,44 @@ class Server(CreationModificationDateBase):
         verbose_name = verbose_name_plural = "Servers"
 
 
+class BaseConnection(models.Model):
+    """
+    Describes the specific base connection model model
 
-class ConnectorType(models.Model):
     """
-    Server connector type
-    example: SSH, FTP, ...
-    """
-    name = models.CharField(verbose_name="Connection type name", max_length=64)
-
-    class Meta:
-        db_table = 'connector_types'
-        verbose_name = verbose_name_plural = "Server connector types"
-
-class SimpleSSHConnector(models.Model):
-    """
-    Describes the ssh server's connection
-    """
-    server_ip = models.GenericIPAddressField(
+    connection_ip = models.GenericIPAddressField(
         verbose_name='Server ip to connections'
     )
 
+    connection_port = models.IntegerField(
+        verbose_name='Server connection port',
+        default=22
+    )
+
+    server_config = models.OneToOneField(
+        verbose_name='Ref to server config',
+        to=ServerConfig,
+        on_delete=models.CASCADE
+    )
+
+    class Meta:
+        db_table = 'base_connection'
+        verbose_name = verbose_name_plural = "BaseConnections"
+
+class SimpleSSHConnector(BaseConnection):
+    """
+    Describes the ssh server's connection
+    by login and password
+    """
     ssh_username = models.CharField(
         verbose_name='SSH. Username for connection to server',
         max_length=64,
         null=False,
     )
-
-    server_ref = models.OneToOneField(
-        verbose_name='Server ref',
-        to=Server,
-        on_delete=models.CASCADE,
-        default=None,
-    )
-
-    connector_type_ref = models.OneToOneField(
-        verbose_name="Connection type ref",
-        to=ConnectorType,
-        null=False,
-        on_delete=models.CASCADE
-        )
-
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.ssh_username}"
 
     class Meta:
         db_table = 'simple_ssh_connections'
         verbose_name = verbose_name_plural = "Simple SSH connectors"
+
