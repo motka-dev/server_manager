@@ -11,7 +11,7 @@ class CreationModificationDateBase(models.Model):
         auto_now_add=True,
     )
 
-    modified = models.DateTimeField(
+    modificated = models.DateTimeField(
         _("Modificated at"),
         auto_now=True,
     )
