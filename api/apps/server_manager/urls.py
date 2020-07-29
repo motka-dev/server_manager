@@ -1,11 +1,11 @@
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import SimpleRouter
-from .views import SimpleSSHConnectionCreate, ServerViewSet
+from .views import SimpleSSHConnectionCreate, ServerConfigDetail
 
 router = SimpleRouter()
 
-router.register('', ServerViewSet, basename='servers')
+router.register('', ServerConfigDetail, basename='servers')
 urlpatterns = [
-    path('connectors/', SimpleSSHConnectionCreate.as_view()),
+    #path('<int:pk>/', ServerConfigDetail),
 ] + router.urls

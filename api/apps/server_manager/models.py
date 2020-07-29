@@ -21,11 +21,6 @@ class ServerConfig(CreationModificationDateBase):
         default=get_random_string(length=5),
     )
 
-    is_connected = models.BooleanField(
-        verbose_name='Flag to show active servers',
-        default=False,
-    )
-
     server_settings = JSONField(
         verbose_name='JSON with settings for \
             SMTP(POSTFIX) and DNS(BIND) services',
@@ -34,15 +29,15 @@ class ServerConfig(CreationModificationDateBase):
     )
 
     def __str__(self) -> str:
-        return f"{self.server_name} {self.is_connected}"
+        return f"{self.server_name} {self.created}"
 
     class Meta:
-        db_table = 'servers'
+        db_table = 'server_config'
         ordering = ['-created']
-        verbose_name = verbose_name_plural = "Servers"
+        verbose_name = verbose_name_plural = "Server's config's"
 
 
-class BaseConnection(models.Model):
+class BaseConnector(models.Model):
     """
     Describes the specific base connection model model
 
@@ -58,15 +53,21 @@ class BaseConnection(models.Model):
 
     server_config = models.OneToOneField(
         verbose_name='Ref to server config',
+        related_name='connector',
         to=ServerConfig,
         on_delete=models.CASCADE
     )
 
-    class Meta:
-        db_table = 'base_connection'
-        verbose_name = verbose_name_plural = "BaseConnections"
+    is_connected = models.BooleanField(
+        verbose_name='Flag to show active servers',
+        default=False,
+    )
 
-class SimpleSSHConnector(BaseConnection):
+    class Meta:
+        db_table = 'base_connector'
+        verbose_name = verbose_name_plural = "Base connectors's"
+
+class SimpleSSHConnector(BaseConnector):
     """
     Describes the ssh server's connection
     by login and password
@@ -80,6 +81,6 @@ class SimpleSSHConnector(BaseConnection):
         return f"{self.ssh_username}"
 
     class Meta:
-        db_table = 'simple_ssh_connections'
-        verbose_name = verbose_name_plural = "Simple SSH connectors"
+        db_table = 'simple_ssh_connection'
+        verbose_name = verbose_name_plural = "Simple SSH connector's"
 
