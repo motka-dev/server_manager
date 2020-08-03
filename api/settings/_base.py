@@ -49,6 +49,11 @@ INSTALLED_APPS = [
     # contributed
     'django.contrib.admin',
     'django.contrib.auth',
+
+    # installed polymorfic
+    # need to be before "django.contrib.contenttypes"
+    'polymorphic',
+
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
@@ -130,9 +135,9 @@ AUTH_USER_MODEL = 'user_profile.CustomUser'
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru-ru'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Moscow'
 
 USE_I18N = True
 

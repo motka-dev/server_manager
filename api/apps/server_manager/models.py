@@ -3,6 +3,8 @@ from django.utils.crypto import get_random_string
 from django.contrib.auth.hashers import make_password
 from django.contrib.postgres.fields import JSONField
 
+from polymorphic.models import PolymorphicModel
+
 from api.apps.core.models import CreationModificationDateBase
 from api.apps.core.stage import get_default_server_settings
 
@@ -37,12 +39,12 @@ class ServerConfig(CreationModificationDateBase):
         return f"{self.server_name} {self.is_connected}"
 
     class Meta:
-        db_table = 'servers'
+        db_table = 'server_config'
         ordering = ['-created']
-        verbose_name = verbose_name_plural = "Servers"
+        verbose_name = verbose_name_plural = "Servers config"
 
 
-class BaseConnection(models.Model):
+class BaseConnector(PolymorphicModel):
     """
     Describes the specific base connection model model
 
@@ -59,14 +61,16 @@ class BaseConnection(models.Model):
     server_config = models.OneToOneField(
         verbose_name='Ref to server config',
         to=ServerConfig,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        related_name='connector'
     )
 
     class Meta:
-        db_table = 'base_connection'
-        verbose_name = verbose_name_plural = "BaseConnections"
+        pass
+        #abstract = True
 
-class SimpleSSHConnector(BaseConnection):
+
+class SimpleSSHConnector(BaseConnector):
     """
     Describes the ssh server's connection
     by login and password
@@ -76,10 +80,30 @@ class SimpleSSHConnector(BaseConnection):
         max_length=64,
         null=False,
     )
+
     def __str__(self) -> str:
-        return f"{self.ssh_username}"
+        return f"username: {self.ssh_username}, \
+        ip: {self.connection_ip}, \
+        port: {self.connection_port}"
 
     class Meta:
         db_table = 'simple_ssh_connections'
         verbose_name = verbose_name_plural = "Simple SSH connectors"
 
+
+class KeySSHConnector(BaseConnector):
+    """
+    Describes the ssh server's connection
+    by RSA key's
+    """
+    ssh_pubkey = models.TextField(
+        verbose_name='SSH. Public RSA key connection to server',
+        null=False,
+    )
+
+    def str(self) -> str:
+        return self.ssh_pubkey
+
+    class Meta:
+        db_table = 'key_ssh_connections'
+        verbose_name = verbose_name_plural = "RSA key SSH connectors"
